@@ -9,15 +9,18 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable  implements JWTSubject
 {
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
-
+    use HasRoles;
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -27,6 +30,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'organizacion_id',
+        'rol_usuario'
     ];
 
     /**
@@ -58,4 +63,38 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    // Relacion uno a muchos inversa
+    public function organizacion(){
+        return $this->belongsTo(Organizacion::class);
+    }
+
+    // Relacion uno a muchos inversa
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
+    use Notifiable;
+
+    // Rest omitted for brevity
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 }

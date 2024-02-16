@@ -5,8 +5,17 @@ import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'Facturador Fenix';
+
+let token = JSON.parse( localStorage.getItem('token') );
+if( token ){
+     window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+}
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -14,9 +23,12 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         return createApp({ render: () => h(App, props) })
             .use(plugin)
+            .use(VueAxios, axios)
             .use(ZiggyVue)
+            .use(VueSweetalert2)
             .mount(el);
-    },
+    }
+    ,
     progress: {
         color: '#4B5563',
     },

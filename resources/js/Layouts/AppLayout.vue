@@ -7,6 +7,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import Menu from '@/Components/Menu.vue';
 
 defineProps({
     title: String,
@@ -30,9 +31,9 @@ const logout = () => {
 <template>
     <div>
         <Head :title="title" />
-
         <Banner />
-
+        <!--<Menu/>-->
+        
         <div class="min-h-screen bg-gray-100">
             <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
@@ -48,12 +49,20 @@ const logout = () => {
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
+                                <NavLink  v-if="$page.props.user.permissions.includes('organizacions.index')" :href="route('organizacions.index')" :active="route().current('organizacions.*')">
+                                    Empresas
                                 </NavLink>
+                                <NavLink v-if="$page.props.user.permissions.includes('users.index')"  :href="route('users.index')" :active="route().current('users.*')">
+                                    Usuarios
+                                </NavLink>
+                                <NavLink v-if="$page.props.user.permissions.includes('ventas.index')" :href="route('ventas.index')" :active="route().current('ventas.*')">
+                                    Facturas
+                                </NavLink>   
+                                <NavLink v-if="$page.props.user.permissions.includes('notas.index')" :href="route('notas.index')" :active="route().current('notas.*')">
+                                    Notas de Credito
+                                </NavLink>                                
                             </div>
                         </div>
-
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <div class="ml-3 relative">
                                 <!-- Teams Dropdown -->
@@ -282,8 +291,11 @@ const logout = () => {
 
             <!-- Page Content -->
             <main>
-                <slot />
+            <slot />
+            
             </main>
+            
         </div>
+        
     </div>
 </template>
